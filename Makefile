@@ -4,9 +4,9 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-FLAGS = -Wall -Wextra -Werror #-fPIC
+FLAGS = -Wall -Wextra -Werror -fPIC
 
-SCR = free.c
+SCR = malloc.c
 
 LINK = libft_malloc.so
 

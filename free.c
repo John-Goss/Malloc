@@ -1,11 +1,17 @@
-#include <sys/mman.h>
-#include <stdlib.h>
+#include "malloc.h"
 
+/*
+** Actually frees only if size is big enough
+** to minimize syscall
+*/
 void	free(void *ptr)
 {
+	t_link_heap	*meta;
+
 	if (ptr == NULL || !ptr)
 		return;
-	munmap(ptr, sizeof(ptr));
-	if (ptr || ptr != NULL)
-		ptr = NULL;
+	meta = ptr - META_BLOCK_SIZE;
+	//if meta->size >...
+	//else if{
+	meta->free = 1;
 }
