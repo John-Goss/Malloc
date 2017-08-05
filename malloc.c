@@ -1,31 +1,27 @@
 #include "malloc.h"
 
-static void			*add_to_list(t_list_heap *head, size_t size)
+static void			*add_to_list(t_head *head, t_list_heap *tmp, size_t size)
 {
-	t_list_heap	*tmp;
-
 	if (head == NULL)
 		return (NULL);
-	tmp = head->tiny_next;
-	while (tmp && tmp->tiny_next)
-		tmp = tmp->tiny_next;
-	if (head->tiny_next + TINY_MAX < tmp + META_BLOCK_SIZE - 1 + size + META_BLOCK_SIZE)
+	write(1, "Could not find free block, try to append...\n", 44);
+	if (size < TINY - META_SIZE &&
+	((char *)(tmp + 1) + TNY + TINY  < (char *)head->tiny + TINY_MAX))
 	{
-		write(2, "Not enough space\n", 17);
-		return (NULL);
+		write(1, "Adding element to allocated list...\n", 36);
+		tmp->next = (t_list_heap *)(char *)(tmp + 1) + TNY;
+		tmp->next->next = NULL;
+		return (tmp->next);
 	}
-	tmp->tiny_next = tmp + META_BLOCK_SIZE  + tmp->size;
-	tmp = tmp->tiny_next;
-	tmp->size = getpagesize() * TNY;
-	tmp->free = 0;
-	tmp->tiny_next = NULL;
-	return (tmp);
+	write(2, "Not enough space\n", 17);
+	return (NULL);
 }
 /*
 ** Checks wether a free block exists in the allocated heap list
 ** TODO: implement merge
+** TODO: handle medium
 */
-static void			*find_free_block(t_list_heap *head, size_t size)
+static void			*find_free_block(t_head *head, size_t size)
 {
 	t_list_heap	*tmp;
 
@@ -33,12 +29,18 @@ static void			*find_free_block(t_list_heap *head, size_t size)
 		return (NULL);
 	//check if size is tiny, medium or large
 	// if size == tiny head = head->tiny_next
-	tmp = head->tiny_next;
-	while (tmp && tmp->tiny_next)
+	write(1, "Search for free block...\n", 25);
+	if (size < TINY - META_SIZE)
 	{
-		if (tmp->free == 1 && tmp->size >= size)
-			return (tmp);
-		tmp = tmp->tiny_next;
+		write(1, "in tiny\n", 8);
+		tmp = head->tiny;
+		while (tmp && tmp->next)
+		{
+			if (tmp->free == 1)
+				return (tmp);
+			tmp = tmp->next;
+		}
+		return add_to_list(head, tmp, size);
 	}
 	return (NULL);
 }
@@ -46,48 +48,49 @@ static void			*find_free_block(t_list_heap *head, size_t size)
 /*
 ** First memory allocating using mmap(2)
 ** Allocates more than requested to avoid system calls
-** Has a pointer to tiny allocated list
+** Has a pointer to tiny and meduim allocated lists
 ** TODO: add medium list
 */
 
-static t_list_heap	*create_head()
+static t_head		*create_head()
 {
-	if ((list_head = mmap(NULL, getpagesize() * 100 * TINY + META_BLOCK_SIZE,
-	PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == (void*) -1)
+	if ((head = mmap(NULL,
+					TINY_MAX + META_HEAD_SIZE,
+					PROT_READ | PROT_WRITE,
+					MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == (void*) -1)
 	{
 		write(2, "mmap(2) error\n", 14);
 		return NULL;
 	}
-	list_head->size = getpagesize() * 100 * TINY; // + medium
-	list_head->free = 0;
-	list_head->tiny_next = (t_list_heap *)(list_head + META_BLOCK_SIZE);
-	list_head->tiny_next->size = getpagesize() * TNY;
-	list_head->tiny_next->free = 1;
-	list_head->tiny_next->tiny_next = NULL;
-	return (list_head);
+	write(1, "Creating head...\n", 17);
+	head->size = TINY_MAX;
+	head->medium = NULL;
+	head->tiny = (t_list_heap *)(head + 1);
+	head->tiny->free = 1;
+	head->tiny->next = NULL;
+	return (head);
 }
 
-t_list_heap	*list_head = NULL;
+t_head				*head = NULL;
 
 void				*malloc(size_t size)
 {
-	t_list_heap	*list_meta;
-	void		*list_space;
+	t_list_heap	*addr_meta;
+	void		*sp;
 
-	if (!list_head && (list_head = create_head()) == NULL)
+	if (!head && (head = create_head()) == NULL)
 		return (NULL);
-	if ((list_meta = find_free_block(list_head, size)) != NULL)// si espace free dispo
+	if ((addr_meta = find_free_block(head, size)) != NULL)// si espace free dispo
 	{
-		list_meta->free = 0;
-		list_space = list_meta + META_BLOCK_SIZE;
+		addr_meta->free = 0;
+		return (addr_meta + 1);
 	}
-	else// appel a mmap(2)
+	if ((sp = mmap(NULL, size, PROT_READ | PROT_WRITE,
+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == (void*) -1)
 	{
-		if ((list_meta = add_to_list(list_head, size)) == NULL)
-			return (NULL);
-		list_space = list_meta + META_BLOCK_SIZE;
+		write(2, "mmap(2) error\n", 14);
+		return (NULL);
 	}
-	if (list_space != NULL)
-		write(1, "YEEES\n", 6);
-	return (list_space);
+	write(1, "mmap done\n", 10);
+	return (sp);
 }

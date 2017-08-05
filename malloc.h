@@ -9,20 +9,27 @@
 */
 typedef struct			s_list_heap
 {
-	size_t				size;
 	int					free;
-	struct s_list_heap	*tiny_next;
+	struct s_list_heap	*next;
 }						t_list_heap;
 
-# define DEBUG write(2, "SALUT\n", 6);
-# define META_BLOCK_SIZE sizeof(t_list_heap)
+typedef struct			s_head
+{
+	size_t				size;
+	struct s_list_heap	*tiny;
+	struct s_list_heap	*medium;
+}						t_head;
+
+# define META_HEAD_SIZE sizeof(t_head)
+# define META_SIZE sizeof(t_list_heap)
 # define TNY 8
-# define TINY 8 + META_BLOCK_SIZE
-# define TINY_MAX (8 + META_BLOCK_SIZE) * 4096
+# define TINY 8 + META_SIZE
+# define TINY_MAX TINY * 100 * getpagesize()
+# define DEBUG write(2, "SALUT\n", 6);
 /*
 ** Global var == dynamic lib
 */
-extern t_list_heap		*list_head;
+extern t_head			*head;
 
 /*
 ** TODO
