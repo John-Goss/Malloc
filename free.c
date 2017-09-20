@@ -1,11 +1,7 @@
-#include <sys/mman.h>
-#include <stdlib.h>
+#include "malloc.h"
 
-void	free(void *ptr)
+void	ft_free(void *ptr)
 {
 	if (ptr == NULL || !ptr)
 		return;
-	munmap(ptr, sizeof(ptr));
-	if (ptr || ptr != NULL)
-		ptr = NULL;
 }
