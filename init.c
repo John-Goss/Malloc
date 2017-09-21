@@ -1,52 +1,39 @@
 #include "malloc.h"
 
+t_zone	g_zone = {NULL, NULL, NULL, 0};
+pthread_mutex_t	g_locker;
+
 int	Init(void)
 {
     if (LOCK_INIT == 1)
         return (0);
     LOCK_INIT = 1;
     pthread_mutex_init(&g_locker, NULL);
-    return (ZoneInit());
+    return (HeapInit());
 }
 
-int    ZoneInit(void)
+int    HeapInit(void)
 {
-    if (g_zone.firstBlock)
-        return (1);
-    g_zone.firstBlock = mmap(0, TINY_HEAP_SIZE, PROT_READ | PROT_WRITE,
+    t_block *tmp;
+    
+    if (TINY_HEAP || SMALL_HEAP)
+        return (0);
+    TINY_HEAP = mmap(0, TINY_HEAP_SIZE, PROT_READ | PROT_WRITE,
                         MAP_ANON | MAP_PRIVATE, -1, 0);
-    if (!g_zone.firstBlock)
+    if (!TINY_HEAP)
         return (1);
-    g_zone.prev = NULL;
-    g_zone.firstBlock->size = TINY_HEAP_SIZE - META_ZONE_SIZE;
-    g_zone.next = mmap(0, SMALL_HEAP_SIZE, PROT_READ | PROT_WRITE,
+    tmp = (t_block *)TINY_HEAP;
+    tmp->size = TINY_HEAP_SIZE - META_BLOCK_SIZE;
+    tmp->free = 1;
+    tmp->next = NULL;
+    SMALL_HEAP = mmap(0, SMALL_HEAP_SIZE, PROT_READ | PROT_WRITE,
                        MAP_ANON | MAP_PRIVATE, -1, 0);
-    if (!g_zone.next)
+    if (!SMALL_HEAP)
         return (1);
-    g_zone.firstBlock->next->size = SMALL_HEAP_SIZE - META_ZONE_SIZE;
-    g_zone.next->prev = &g_zone;
+    tmp = (t_block *)SMALL_HEAP;
+    tmp->size = SMALL_HEAP_SIZE - META_BLOCK_SIZE;
+    tmp->free = 1;
+    tmp->next = NULL;
+    LARGE_HEAP = NULL;
     return (0);
 }
-/*
-void    InitZone(size_t size)
-{
-    g_zone.size = 0;
-    g_zone.block = NULL;
-    g_zone.prev = NULL;
-    g_zone.next = NULL;
-    
-    if (size <= TINY_ALLOC_LIMIT)
-    {
-        AllocTiny();
-    }
-    else if (size <= SMALL_ALLOC_LIMIT)
-    {
-        AllocSmall();
-    }
-    else
-    {
-        AllocLarge();
-    }
-    
-}
-*/

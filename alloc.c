@@ -1,60 +1,83 @@
 #include "malloc.h"
-/*
-int    AllocZone(t_type type, size_t size)
+
+void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSize)
 {
     t_block *block;
-    t_block *tmp;
-    size_t  allocateSize;
     
-    if (type == LARGE)
-        return (AllocLargeZone(size));
-    allocateSize = ALIGN_BLOCK_SIZE_8(type = TINY ? TINY_HEAP_SIZE : SMALL_HEAP_SIZE + sizeof(t_zone));
-    block = NULL;
-    tmp = g_zone.firstBlock;
-    block = mmap(0, allocateSize, PROT_READ | PROT_WRITE,
-                        MAP_ANON | MAP_PRIVATE, -1, 0);
-    if (block != NULL)
+    block = FindBlock(&last, blockSize, type);
+    if (block && ((block->size - blockSize) >= (META_BLOCK_SIZE + 8)))
+        SplitBlock(block, blockSize);
+    else if (!block)
     {
-        block->size = allocateSize;
-        block->free = 1;
-        block->prev = NULL;
-        block->next = NULL;
-        if (tmp == NULL)
-        {
-            g_zone.firstBlock = block;
-        }
-        else
-        {
-            while (tmp->next)
-            {
-                tmp->next = block;
-                block->prev = tmp;
-            }
-        }
-        return (0);
+        block = ExtendHeap(last, (type == TINY ? TINY_HEAP_SIZE : SMALL_HEAP_SIZE));
+        if (!block)
+            return (NULL);
+        return (AllocZone(block, blockSize, type, allocSize));
     }
-    return (1);
+    if (block)
+    {
+        block->allocSize = allocSize;
+        block->free = 0;
+    }
+    return (block->data);
 }
 
-int    AllocLargeZone(size_t size)
+void    *AllocLargeZone(size_t size)
 {
     t_block *block;
-    t_block *tmp;
-    size_t  allocateSize;
+    size_t  allocSize;
     
-    allocateSize = ALIGN_BLOCK_SIZE_4096(size + sizeof(t_zone));
-    block = NULL;
-    tmp = NULL;
-    block = mmap(0, allocateSize, PROT_READ | PROT_WRITE,
+    allocSize = ALIGN_BLOCK_SIZE_4096(size);
+    block = mmap(0, allocSize + META_BLOCK_SIZE, PROT_READ | PROT_WRITE,
                  MAP_ANON | MAP_PRIVATE, -1, 0);
-    if (block != NULL)
+    block->size = allocSize;
+    block->allocSize = size;
+    block->next = LARGE_HEAP;
+    LARGE_HEAP = block;
+    return (block->data);
+}
+
+void    *ExtendHeap(t_block *last, size_t size)
+{
+    t_block *new;
+    
+    new = mmap(0, size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
+    if (new)
     {
-        block->size = allocateSize;
-        block->free = 1;
-        block->prev = NULL;
-        block->next = NULL;
-        g_zone.firstBlock = block;
-        return (0);
+        new->size = size - META_BLOCK_SIZE;
+        new->free = 1;
+        if (last)
+            last->next = new;
     }
-    return (1);
-}*/
+    return (new);
+}
+
+void    SplitBlock(t_block *block, size_t size)
+{
+    t_block	*new_block;
+    
+    new_block = (t_block *)(block->data + size);
+    new_block->size = block->size - size - META_BLOCK_SIZE;
+    new_block->next = block->next;
+    new_block->free = 1;
+    block->size = size;
+    block->next = new_block;
+}
+
+void    *FindBlock(t_block **last, size_t blockSize, t_type type)
+{
+    t_block *block;
+    
+    if (type == TINY)
+        block = (t_block *)TINY_HEAP;
+    else if (type == SMALL)
+        block = (t_block *)SMALL_HEAP;
+    else
+        block = (t_block *)LARGE_HEAP;
+    while (block && !(block->free && block->size >= blockSize))
+    {
+        *last = block;
+        block = block->next;
+    }
+    return (block);
+}
