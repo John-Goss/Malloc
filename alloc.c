@@ -18,7 +18,6 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
     {
         block->allocSize = allocSize;
         block->free = 0;
-        block->next = NULL;
     }
     return (block->data);
 }
