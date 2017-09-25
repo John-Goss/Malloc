@@ -4,7 +4,7 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
 {
     t_block *block;
     
-    block = FindBlock(&last, blockSize, type);
+    block = FindFreeBlock(&last, blockSize, type);
     if (block && ((block->size - blockSize) >= (META_BLOCK_SIZE + 8)))
         SplitBlock(block, blockSize);
     else if (!block)
@@ -18,6 +18,7 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
     {
         block->allocSize = allocSize;
         block->free = 0;
+        block->next = NULL;
     }
     return (block->data);
 }
@@ -64,7 +65,7 @@ void    SplitBlock(t_block *block, size_t size)
     block->next = new_block;
 }
 
-void    *FindBlock(t_block **last, size_t blockSize, t_type type)
+void    *FindFreeBlock(t_block **last, size_t blockSize, t_type type)
 {
     t_block *block;
     
