@@ -2,41 +2,51 @@
 
 void	ft_free(void *ptr)
 {
-    t_block *block;
-    
-    block = NULL;
-	if (ptr == NULL || !ptr)
-		return;
-    IsValidBlock(((t_block **)&ptr), &block, TINY);
-    if (block == NULL)
+    if (Init())
         return;
-    block->free = 1;
-    printf("PTR = [%p]\n\n", ptr - META_BLOCK_SIZE + 8);
-    printf ("Block = [%p]\n", block);
-    printf ("Block->data = [%p]\n", block->data);
+    pthread_mutex_lock(&g_locker);
+    ExecFree(ptr);
+    pthread_mutex_unlock(&g_locker);
 }
 
-void    IsValidBlock(t_block **ptr, t_block **dst, t_type type)
+void	ExecFree(void *ptr)
 {
-    t_block *ref;
+    t_block *block;
+    t_block *prev;
+    
+	if (ptr == NULL)
+		return;
+    block = (t_block *)(ptr - META_BLOCK_SIZE);
+    prev = IsValidBlock(block);
+    if (prev != NULL && block->free == 0)
+    {
+        block->free = 1;
+        if (block->size > SMALL_ALLOC_LIMIT)
+            return (RemoveLargeAlloc(block, prev));
+        MergeBlocks(block, prev);
+    }
+}
+
+t_block  *IsValidBlock(t_block *block)
+{
+    t_block *prev;
     t_block *tmp;
     
-    ref = *ptr;
-    if (type == TINY)
+    if (block == NULL)
+        return (NULL);
+    if (block->size <= TINY_ALLOC_LIMIT)
         tmp = (t_block *)TINY_HEAP;
-    else if (type == SMALL)
+    else if (block->size <= SMALL_ALLOC_LIMIT)
         tmp = (t_block *)SMALL_HEAP;
-    else if (type == LARGE)
-        tmp = (t_block *)LARGE_HEAP;
     else
-        return;
-    printf("TMP : %p\nREF : %p\n", tmp->data, ref);
+        tmp = (t_block *)LARGE_HEAP;
+    prev = tmp;
     while (tmp)
     {
-        if ((void *)tmp->data == (void *)ref && tmp->free == 0)
-            *dst = tmp;
+        if (tmp == block)
+            return (prev);
+        prev = tmp;
         tmp = tmp->next;
     }
-    IsValidBlock(ptr, dst, type + 1);
-    return;
+    return (NULL);
 }

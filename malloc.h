@@ -5,15 +5,14 @@
 # include <sys/mman.h>
 # include <unistd.h>
 # include <stdio.h>
-# include "libft/INCLUDES/libft.h"
+//# include "libft/INCLUDES/libft.h"
 # include <pthread.h>
 
 # define LOCK_INIT g_zone.locked
 # define TINY_HEAP g_zone.tinyHeap
 # define SMALL_HEAP g_zone.smallHeap
 # define LARGE_HEAP g_zone.largeHeap
-# define META_BLOCK_SIZE sizeof(t_block)
-# define META_ZONE_SIZE sizeof(t_zone)
+# define META_BLOCK_SIZE (sizeof(t_block) - sizeof(char *))
 # define TINY_HEAP_SIZE (getpagesize() * 64)
 # define SMALL_HEAP_SIZE (getpagesize() * 512)
 # define TINY_ALLOC_LIMIT (1024)
@@ -53,14 +52,15 @@ extern pthread_mutex_t	g_locker;
 void    *ft_malloc(size_t size);
 void    *ft_calloc(size_t count, size_t size);
 void	*ft_realloc(void *ptr, size_t size);
+void	ft_free(void *ptr);
 void    *LockedMalloc(size_t size);
 void    *FindFreeBlock(t_block **last, size_t blockSize, t_type type);
-void    IsValidBlock(t_block **ptr, t_block **dst, t_type type);
+t_block *IsValidBlock(t_block *ptr);
 void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSize);
 void    *AllocLargeZone(size_t size);
 void    *ExtendHeap(t_block *last, size_t size);
 void    SplitBlock(t_block *block, size_t size);
-void	ft_free(void *ptr);
+void	ExecFree(void *ptr);
 
 int     HeapInit(void);
 int     Init(void);
