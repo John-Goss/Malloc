@@ -27,7 +27,7 @@ void	ExecFree(void *ptr)
     }
 }
 
-t_block  *IsValidBlock(t_block *block)
+t_block *IsValidBlock(t_block *block)
 {
     t_block *prev;
     t_block *tmp;

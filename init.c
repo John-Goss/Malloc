@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-t_zone	g_zone = {NULL, NULL, NULL, 0};
+t_zone          g_zone = {NULL, NULL, NULL, 0};
 pthread_mutex_t	g_locker;
 
 int	Init(void)
@@ -12,7 +12,7 @@ int	Init(void)
     return (HeapInit());
 }
 
-int    HeapInit(void)
+int HeapInit(void)
 {
     t_block *tmp;
     
