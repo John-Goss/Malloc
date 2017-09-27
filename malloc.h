@@ -72,4 +72,6 @@ t_type	GetAllocType(size_t size);
 int     HeapInit(void);
 int     Init(void);
 
+void	show_alloc_mem(void);
+
 #endif
