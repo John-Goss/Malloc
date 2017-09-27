@@ -1,30 +1,34 @@
-#include "malloc.c"
+#include "malloc.h"
 
 static void	PrintAddress(void *addr)
 {
-    write(1, "0x", 2);
-    ft_putnbr((size_t)addr, 16);
+    //write(1, "0x", 2);
+    //ft_putnbr((size_t)addr, 16);
+    printf("0x%09X", (unsigned int)addr);
 }
 
-static void	print_alloc_info(t_block *block)
+static void	PrintAllocInfo(t_block *block)
 {
-    PrintAddress((void *)(block->data));
+/*  PrintAddress((void *)(block->data));
     write(1, " - ", 3);
     PrintAddress((void *)(block->data + block->size));
     write(1, " : ", 3);
-    ft_putnbr((int)(block->allocSize), 10);
+    //ft_putnbr((int)(block->allocSize), 10);
+    printf("%zu", block->allocSize);
     write(1, " octets\n", 8);
+*/
+    printf("0x%09X - 0x%09X : %zu octets\n",(unsigned int)block->data, (unsigned int)(block->data + block->size), block->allocSize);
 }
 
 static void	PrintMemory(t_block *block, unsigned int *total)
 {
-    PrintAddress(block);
-    write(1, "\n", 1);
+    printf("0x%09X\n", (unsigned int)block);
+    //write(1, "\n", 1);
     while (block)
     {
         if (block->free == 0)
         {
-            print_alloc_info(block);
+            PrintAllocInfo(block);
             *total += block->size;
         }
         block = block->next;
@@ -46,5 +50,5 @@ void        show_alloc_mem(void)
     tmp = LARGE_HEAP;
     write(1, "LARGE : ", 8);
     PrintMemory(tmp, &total);
-    ft_printf("Total : %u octets\n", total);
+    printf("Total : %u octets\n", total);
 }

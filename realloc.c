@@ -34,7 +34,8 @@ void	*ExecRealloc(void *ptr, size_t size)
     }
     if ((block = ExecMalloc(size)))
     {
-        ft_memmove(block, ptr, (prev == ptr - META_BLOCK_SIZE) ?
+        //TODO: changes memove by ft_memmove
+        memmove(block, ptr, (prev == ptr - META_BLOCK_SIZE) ?
                    prev->size : prev->next->size);
         ExecFree(ptr);
     }

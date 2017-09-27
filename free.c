@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-void	free(void *ptr)
+void	ft_free(void *ptr)
 {
     if (Init())
         return;

@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-void	*malloc(size_t size)
+void	*ft_malloc(size_t size)
 {
     void	*ptr;
     
@@ -29,6 +29,7 @@ void	*calloc(size_t count, size_t size)
     void	*block;
     
     block = malloc(count * size);
-    ft_bzero(block, count * size);
+    // TODO: changes bzero by ft_bzero
+    bzero(block, count * size);
     return (block);
 }

@@ -5,7 +5,8 @@
 # include <sys/mman.h>
 # include <unistd.h>
 # include <stdio.h>
-//# include "libft/INCLUDES/libft.h"
+//# include "../Libft/INCLUDES/libft.h"
+//# include "../Libft/INCLUDES/ft_printf.h"
 # include <pthread.h>
 
 # define LOCK_INIT g_zone.locked
@@ -49,13 +50,13 @@ typedef struct      s_zone
 extern t_zone           g_zone;
 extern pthread_mutex_t	g_locker;
 
-void    *malloc(size_t size);
+void    *ft_malloc(size_t size);
 void	*ExecMalloc(size_t size);
 void    *calloc(size_t count, size_t size);
 void	*realloc(void *ptr, size_t size);
 void	*ExecRealloc(void *addr, size_t size);
 void	*reallocf(void *ptr, size_t size);
-void	free(void *ptr);
+void	ft_free(void *ptr);
 void	ExecFree(void *ptr);
 void    *LockedMalloc(size_t size);
 void    *FindFreeBlock(t_block **last, size_t blockSize, t_type type);
