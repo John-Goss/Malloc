@@ -50,3 +50,12 @@ t_block  *IsValidBlock(t_block *block)
     }
     return (NULL);
 }
+
+void    RemoveLargeAlloc(t_block *block, t_block *prev)
+{
+    if (prev == block)
+        LARGE_HEAP = block->next;
+    else
+        prev->next = block->next;
+    munmap((void *)block, block->size);
+}

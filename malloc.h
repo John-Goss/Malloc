@@ -60,6 +60,7 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
 void    *AllocLargeZone(size_t size);
 void    *ExtendHeap(t_block *last, size_t size);
 void    SplitBlock(t_block *block, size_t size);
+void    RemoveLargeAlloc(t_block *block, t_block *prev);
 void	ExecFree(void *ptr);
 
 int     HeapInit(void);
