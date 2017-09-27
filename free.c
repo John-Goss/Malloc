@@ -1,6 +1,6 @@
 #include "malloc.h"
 
-void	ft_free(void *ptr)
+void	free(void *ptr)
 {
     if (Init())
         return;
@@ -58,4 +58,20 @@ void    RemoveLargeAlloc(t_block *block, t_block *prev)
     else
         prev->next = block->next;
     munmap((void *)block, block->size);
+}
+
+void    MergeBlocks(t_block *block, t_block *prev)
+{
+    if (block->next == NULL)
+        return ;
+    while (block->next != NULL && block->next->free == 1)
+    {
+        block->size += block->next->size + META_BLOCK_SIZE;
+        block->next = block->next->next;
+    }
+    if (block != NULL && prev != NULL && block != prev && prev->free == 1 && block->free == 1)
+    {
+        prev->size += block->size + META_BLOCK_SIZE;
+        prev->next = block->next;
+    }
 }

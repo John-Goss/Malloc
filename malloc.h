@@ -49,10 +49,14 @@ typedef struct      s_zone
 extern t_zone           g_zone;
 extern pthread_mutex_t	g_locker;
 
-void    *ft_malloc(size_t size);
-void    *ft_calloc(size_t count, size_t size);
-void	*ft_realloc(void *ptr, size_t size);
-void	ft_free(void *ptr);
+void    *malloc(size_t size);
+void	*ExecMalloc(size_t size);
+void    *calloc(size_t count, size_t size);
+void	*realloc(void *ptr, size_t size);
+void	*ExecRealloc(void *addr, size_t size);
+void	*reallocf(void *ptr, size_t size);
+void	free(void *ptr);
+void	ExecFree(void *ptr);
 void    *LockedMalloc(size_t size);
 void    *FindFreeBlock(t_block **last, size_t blockSize, t_type type);
 t_block *IsValidBlock(t_block *ptr);
@@ -60,8 +64,10 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
 void    *AllocLargeZone(size_t size);
 void    *ExtendHeap(t_block *last, size_t size);
 void    SplitBlock(t_block *block, size_t size);
+void    MergeBlocks(t_block *block, t_block *prev);
 void    RemoveLargeAlloc(t_block *block, t_block *prev);
-void	ExecFree(void *ptr);
+t_type	GetBlockType(t_block *block);
+t_type	GetAllocType(size_t size);
 
 int     HeapInit(void);
 int     Init(void);
