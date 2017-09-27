@@ -29,6 +29,6 @@ void	*calloc(size_t count, size_t size)
     void	*block;
     
     block = malloc(count * size);
-    bzero(block, count * size);
+    ft_bzero(block, count * size);
     return (block);
 }

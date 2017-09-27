@@ -25,13 +25,13 @@ void    *AllocZone(t_block *last, size_t blockSize, t_type type, size_t allocSiz
 void    *AllocLargeZone(size_t size)
 {
     t_block *block;
-    size_t  allocSize;
+    size_t  alignSize;
     
-    allocSize = ALIGN_BLOCK_SIZE_4096(size);
-    block = mmap(0, allocSize + META_BLOCK_SIZE, PROT_READ | PROT_WRITE,
+    alignSize = ALIGN_BLOCK_SIZE_4096(size);
+    block = mmap(0, alignSize + META_BLOCK_SIZE, PROT_READ | PROT_WRITE,
                  MAP_ANON | MAP_PRIVATE, -1, 0);
-    block->size = allocSize;
-    block->allocSize = size;
+    block->size = size;
+    block->allocSize = alignSize;
     block->next = LARGE_HEAP;
     LARGE_HEAP = block;
     return (block->data);
