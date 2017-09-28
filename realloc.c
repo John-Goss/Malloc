@@ -66,7 +66,7 @@ void	*reallocf(void *ptr, size_t size)
 
 	alloc = realloc(ptr, size);
 	if (alloc == NULL)
-		free(ptr);
+		ft_free(ptr);
 	return (alloc);
 }
 
