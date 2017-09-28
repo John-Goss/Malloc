@@ -6,7 +6,7 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 17:51:36 by jle-quer          #+#    #+#             */
-/*   Updated: 2017/09/28 17:53:00 by jle-quer         ###   ########.fr       */
+/*   Updated: 2017/09/28 18:29:14 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	*ft_malloc(size_t size)
 {
 	void	*ptr;
 
-	if (size == 0)
-		size = ALLOC_MIN;
 	if (init())
 		return (NULL);
 	pthread_mutex_lock(&g_locker);
@@ -30,6 +28,8 @@ void	*exec_malloc(size_t size)
 {
 	size_t	aligned;
 
+	if (size == 0)
+		size = ALLOC_MIN;
 	aligned = ALIGN_BLOCK_SIZE_8(size);
 	if (size <= TINY_ALLOC_LIMIT)
 		return (alloc_zone(TINY_HEAP, aligned, TINY, size));

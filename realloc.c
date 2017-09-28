@@ -6,7 +6,7 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 18:14:24 by jle-quer          #+#    #+#             */
-/*   Updated: 2017/09/28 18:14:26 by jle-quer         ###   ########.fr       */
+/*   Updated: 2017/09/28 18:28:55 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@ void	*ft_realloc(void *ptr, size_t size)
 	if (init())
 		return (NULL);
 	pthread_mutex_lock(&g_locker);
-	if (ptr == NULL)
-		return (exec_malloc(size));
-	else if (ptr && size == 0)
+	if (ptr && size == 0)
 	{
 		exec_free(ptr);
-		return (exec_malloc(ALLOC_MIN));
+		new = exec_malloc(ALLOC_MIN);
 	}
-	new = exec_realloc(ptr, size);
+	else if (ptr == NULL)
+		new = exec_malloc(size);
+	else
+		new = exec_realloc(ptr, size);
 	pthread_mutex_unlock(&g_locker);
 	return (ptr);
 }
