@@ -4,9 +4,14 @@ ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-FLAGS = -Wall -Wextra -Werror #-fPIC
+FLAGS = -Wall -Wextra -Werror
 
-SCR = free.c
+SCR = free.c \
+	  display.c \
+	  malloc.c \
+	  realloc.c \
+	  init.c \
+	  alloc.c
 
 LINK = libft_malloc.so
 
