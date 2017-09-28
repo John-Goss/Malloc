@@ -14,13 +14,13 @@
 
 static void	print_block_alloc_info(t_block *block)
 {
-	ft_printf("0x%09X - 0x%09X : %zu octets\n", (unsigned int)block->data,
-			(unsigned int)(block->data + block->size), block->allocsize);
+	ft_printf("%p - %p : %zu octets\n", block->data,
+              (block->data + block->size), block->allocsize);
 }
 
 static void	print_memory(t_block *block, unsigned int *total)
 {
-	ft_printf("0x%09X\n", (unsigned int)block);
+	ft_printf("%p\n", block);
 	while (block)
 	{
 		if (block->free == 0)
