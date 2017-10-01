@@ -44,8 +44,8 @@ void	*alloc_large_zone(size_t size)
 	alignsize = ALIGN_BLOCK_SIZE_4096(size);
 	block = mmap(0, alignsize + META_BLOCK_SIZE, PROT_READ | PROT_WRITE,
 			MAP_ANON | MAP_PRIVATE, -1, 0);
-	block->size = size;
-	block->allocsize = alignsize;
+	block->size = alignsize;
+	block->allocsize = size;
 	block->next = LARGE_HEAP;
 	LARGE_HEAP = block;
 	return (block->data);
