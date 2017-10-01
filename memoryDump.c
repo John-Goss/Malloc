@@ -5,10 +5,9 @@ static void	dump_block(t_block *block)
     char	*ptr;
     
     ptr = block->data;
-    while (ptr < block->data + block->size)
+    while (ptr != (block->data + block->allocsize))
     {
-        ft_putnbr((int)(*ptr), 16);
-        ft_putstr(" ");
+        ft_printf("[%X] ", *ptr);
         ++ptr;
     }
 }
@@ -29,7 +28,7 @@ void		dump_zone(t_type type)
         {
             print_block_alloc_info(heap_start);
             dump_block(heap_start);
-            ft_putendl("");
+            write(1, "\n", 1);
         }
         heap_start = heap_start->next;
     }

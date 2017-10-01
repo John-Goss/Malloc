@@ -87,5 +87,6 @@ int						init(void);
 
 void					show_alloc_mem(void);
 void                    print_block_alloc_info(t_block *block);
+void                    dump_zone(t_type type);
 
 #endif
