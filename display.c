@@ -12,7 +12,7 @@
 
 #include "malloc.h"
 
-static void	print_block_alloc_info(t_block *block)
+void        print_block_alloc_info(t_block *block)
 {
 	ft_printf("%p - %p : %zu octets\n", block->data,
               (block->data + block->size), block->allocsize);

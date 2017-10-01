@@ -86,5 +86,6 @@ int						heap_init(void);
 int						init(void);
 
 void					show_alloc_mem(void);
+void                    print_block_alloc_info(t_block *block);
 
 #endif
