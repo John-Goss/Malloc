@@ -1,8 +1,20 @@
-NAME = libft_malloc_$(HOSTTYPE).so
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2017/10/03 17:43:42 by jle-quer          #+#    #+#              #
+#    Updated: 2017/10/03 17:45:00 by jle-quer         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
 
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
+
+NAME = libft_malloc_$(HOSTTYPE).so
 
 FLAGS = -Wall -Wextra -Werror
 
