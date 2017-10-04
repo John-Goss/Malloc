@@ -24,8 +24,8 @@
 # define SMALL_HEAP g_zone.small_heap
 # define LARGE_HEAP g_zone.large_heap
 # define META_BLOCK_SIZE (sizeof(t_block) - sizeof(char *))
-# define TINY_HEAP_SIZE (getpagesize() * 64)
-# define SMALL_HEAP_SIZE (getpagesize() * 512)
+# define TINY_HEAP_SIZE ((size_t)getpagesize() * 64)
+# define SMALL_HEAP_SIZE ((size_t)getpagesize() * 512)
 # define TINY_ALLOC_LIMIT (1024)
 # define SMALL_ALLOC_LIMIT (1024 * 16)
 # define ALLOC_MIN (sizeof(int) * 2)
