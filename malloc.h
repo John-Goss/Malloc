@@ -15,7 +15,6 @@
 
 # include <stdlib.h>
 # include <sys/mman.h>
-# include <unistd.h>
 # include <stdio.h>
 # include "./libft/INCLUDES/libft.h"
 # include <pthread.h>
@@ -28,7 +27,7 @@
 # define TINY_HEAP_SIZE (getpagesize() * 64)
 # define SMALL_HEAP_SIZE (getpagesize() * 512)
 # define TINY_ALLOC_LIMIT (1024)
-# define SMALL_ALLOC_LIMIT ((1024 * 16))
+# define SMALL_ALLOC_LIMIT (1024 * 16)
 # define ALLOC_MIN (sizeof(int) * 2)
 # define ALIGN_BLOCK_SIZE_8(x) (((((x) - 1) >> 3) << 3) + 8)
 # define ALIGN_BLOCK_SIZE_4096(x) (((((x) - 1) >> 12) << 12) + 4096)
@@ -61,13 +60,13 @@ typedef struct			s_zone
 extern t_zone			g_zone;
 extern pthread_mutex_t	g_locker;
 
-void					*ft_malloc(size_t size);
+void					*malloc(size_t size);
 void					*exec_malloc(size_t size);
 void					*calloc(size_t count, size_t size);
-void					*ft_realloc(void *ptr, size_t size);
+void					*realloc(void *ptr, size_t size);
 void					*exec_realloc(void *addr, size_t size);
 void					*reallocf(void *ptr, size_t size);
-void					ft_free(void *ptr);
+void					free(void *ptr);
 void					exec_free(void *ptr);
 void					*find_free_block(t_block **last, size_t blocksize,
 						t_type type);
@@ -86,7 +85,9 @@ int						heap_init(void);
 int						init(void);
 
 void					show_alloc_mem(void);
-void                    print_block_alloc_info(t_block *block);
-void                    dump_zone(t_type type);
+void					print_alloc_info(t_block *block);
+void					dump_zone(t_type type);
+char					digit(int nb, int maj);
+void					ft_putnbr_base(intmax_t nb, int base);
 
 #endif

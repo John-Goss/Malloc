@@ -6,7 +6,7 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/03 11:24:01 by jle-quer          #+#    #+#             */
-/*   Updated: 2017/10/03 11:24:02 by jle-quer         ###   ########.fr       */
+/*   Updated: 2017/10/04 18:12:47 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@ static void	dump_block(t_block *block)
 	char	*ptr;
 
 	ptr = block->data;
-	while (ptr != (block->data + block->allocsize))
+	while (ptr < block->data + block->size)
 	{
-		ft_printf("[%X] ", *ptr);
+		ft_putnbr_base((int)(*ptr), 16);
+		ft_putstr(" ");
 		++ptr;
 	}
 }
@@ -38,10 +39,26 @@ void		dump_zone(t_type type)
 	{
 		if (heap_start->free == 0)
 		{
-			print_block_alloc_info(heap_start);
+			print_alloc_info(heap_start);
 			dump_block(heap_start);
 			write(1, "\n", 1);
 		}
 		heap_start = heap_start->next;
 	}
+}
+
+char		digit(int nb, int maj)
+{
+	if (nb < 10)
+		return ('0' + nb);
+	if (maj)
+		return ('A' + nb % 10);
+	return ('a' + nb % 10);
+}
+
+void		ft_putnbr_base(intmax_t nb, int base)
+{
+	if (nb > 9)
+		ft_putnbr_base(nb / base, base);
+	ft_putchar(digit(nb % base, 1));
 }

@@ -12,7 +12,7 @@
 
 #include "malloc.h"
 
-void	ft_free(void *ptr)
+void	free(void *ptr)
 {
 	if (init())
 		return ;
@@ -30,7 +30,7 @@ void	exec_free(void *ptr)
 		return ;
 	block = (t_block *)(ptr - META_BLOCK_SIZE);
 	prev = is_valid_block(block);
-	if (prev != NULL && block->free == 0)
+	if (prev && block->free == 0)
 	{
 		block->free = 1;
 		if (block->size > SMALL_ALLOC_LIMIT)
