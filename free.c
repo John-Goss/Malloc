@@ -28,6 +28,11 @@ void	exec_free(void *ptr)
 
 	if (ptr == NULL)
 		return ;
+	// !!! CHECK IF PTR EXISTS IN MY RANGE !!!
+	if (ptr < TINY_HEAP || ptr > TINY_HEAP + TINY_HEAP_SIZE)
+	{
+		return ;
+	}
 	block = (t_block *)(ptr - META_BLOCK_SIZE);
 	prev = is_valid_block(block);
 	if (prev && block->free == 0)
