@@ -6,7 +6,7 @@
 #    By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/03 17:43:42 by jle-quer          #+#    #+#              #
-#    Updated: 2017/10/03 17:45:00 by jle-quer         ###   ########.fr        #
+#    Updated: 2017/10/03 17:52:51 by jle-quer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,38 +16,42 @@ endif
 
 NAME = libft_malloc_$(HOSTTYPE).so
 
-FLAGS = -Wall -Wextra -Werror
+LINK_NAME = libft_malloc.so
 
-SCR = free.c \
-	  display.c \
-	  malloc.c \
-	  realloc.c \
-	  init.c \
-	  alloc.c
+SRC =	malloc.c \
+		display.c \
+		memorydump.c \
+		realloc.c \
+		free.c \
+		init.c \
+		alloc.c
 
-LINK = libft_malloc.so
+OBJ = $(SRC:.c=.o)
 
-OBJ = $(SCR:.c=.o)
+CFLAGS = -Wextra -Wall -Werror
 
-$(NAME) : link $(OBJ)
-	make -C libft/
-	gcc -o $(NAME) -shared $(FLAGS) $(OBJ) -L libft -lft
+LIBFT_INC = -I libft/INCLUDES
 
-all : $(NAME)
+INC = -I includes
 
-link :
-	ln -s $(NAME) $(LINK)
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	make -C libft
+	gcc $(CFLAGS) -shared -o $(NAME) $(OBJ) -lft -L libft $(INC) $(LIBFT_INC)
+	ln -s $(NAME) $(LINK_NAME)
 
 %.o: %.c
-	gcc $(FLAGS) -I. -c $<
+	gcc -c $(CFLAGS) $(INC) $(LIBFT_INC) $^ -o $@ -fPIC
 
-clean :
-	make -C libft/ clean
+clean:
 	rm -f $(OBJ)
 
-fclean : clean
-	make -C libft/ fclean
-	rm -rf $(NAME) $(LINK)
+fclean: clean
+	make fclean -C libft
+	rm -f $(NAME)
+	rm -f $(LINK_NAME)
 
-re : fclean all
+re: fclean all
 
+.PHONY: all clean fclean re
