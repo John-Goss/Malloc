@@ -33,31 +33,31 @@ void	*realloc(void *ptr, size_t size)
 
 void	*exec_realloc(void *ptr, size_t size)
 {
-	t_block	*block;
+	t_block	*b;
 	t_block	*prev;
 	size_t	aligned;
 
 	aligned = ALIGN_BLOCK_SIZE_8(size);
-	if ((prev = is_valid_block((t_block *)(ptr - META_BLOCK_SIZE))) == NULL)
+	if (!in_my_address_range((size_t)ptr - META_BLOCK_SIZE) ||
+		(prev = is_valid_block((t_block *)(ptr - META_BLOCK_SIZE))) == NULL)
 		return (NULL);
-	block = (prev == (ptr - META_BLOCK_SIZE)) ? prev : prev->next;
-	if (block->next && block->next->free == 1 &&
-		block->next->size + block->size >= aligned &&
-		get_block_type(block) == get_alloc_type(aligned))
+	b = (prev == (ptr - META_BLOCK_SIZE)) ? prev : prev->next;
+	if (b->next && b->next->free == 1 && b->next->size + b->size >= aligned &&
+		get_block_type(b) == get_alloc_type(aligned))
 	{
-		block->size += block->next->size + META_BLOCK_SIZE;
-		block->allocsize += size;
-		block->next = block->next->next;
-		split_block(block, aligned);
-		return (block);
+		b->size += b->next->size + META_BLOCK_SIZE;
+		b->allocsize += size;
+		b->next = b->next->next;
+		split_block(b, aligned);
+		return (b);
 	}
-	if ((block = exec_malloc(size)))
+	if ((b = exec_malloc(size)))
 	{
-		ft_memmove(block, ptr, (prev == ptr - META_BLOCK_SIZE) ?
+		ft_memmove(b, ptr, (prev == ptr - META_BLOCK_SIZE) ?
 					prev->size : prev->next->size);
 		exec_free(ptr);
 	}
-	return (block);
+	return (b);
 }
 
 void	*reallocf(void *ptr, size_t size)

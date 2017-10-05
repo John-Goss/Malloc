@@ -26,13 +26,8 @@ void	exec_free(void *ptr)
 	t_block	*block;
 	t_block	*prev;
 
-	if (ptr == NULL)
+	if (ptr == NULL || !in_my_address_range((size_t)ptr - META_BLOCK_SIZE))
 		return ;
-	// !!! CHECK IF PTR EXISTS IN MY RANGE !!!
-	if (ptr < TINY_HEAP || ptr > TINY_HEAP + TINY_HEAP_SIZE)
-	{
-		return ;
-	}
 	block = (t_block *)(ptr - META_BLOCK_SIZE);
 	prev = is_valid_block(block);
 	if (prev && block->free == 0)

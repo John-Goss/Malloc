@@ -83,6 +83,7 @@ t_type					get_alloc_type(size_t size);
 
 int						heap_init(void);
 int						init(void);
+int						in_my_address_range(size_t address);
 
 void					show_alloc_mem(void);
 void					print_alloc_info(t_block *block);

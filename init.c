@@ -49,3 +49,31 @@ int	heap_init(void)
 	LARGE_HEAP = NULL;
 	return (0);
 }
+
+int	in_my_address_range(size_t address)
+{
+	t_block	*tmp;
+
+	tmp = TINY_HEAP;
+	while (tmp)
+	{
+		if (address == (size_t)tmp)
+			return (1);
+		tmp = tmp->next;
+	}
+	tmp = SMALL_HEAP;
+	while (tmp)
+	{
+		if (address == (size_t)tmp)
+			return (1);
+		tmp = tmp->next;
+	}
+	tmp = LARGE_HEAP;
+	while (tmp)
+	{
+		if (address == (size_t)tmp)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
