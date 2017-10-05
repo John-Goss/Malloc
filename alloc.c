@@ -39,17 +39,25 @@ void	*alloc_zone(t_block *last, size_t blocksize, t_type type,
 void	*alloc_large_zone(size_t size)
 {
 	t_block	*block;
+	t_block	*tmp;
 	size_t	alignsize;
 
-	alignsize = ALIGN_BLOCK_SIZE_4096(size + META_BLOCK_SIZE);
-	block = mmap(0, alignsize, PROT_READ | PROT_WRITE,
+	alignsize = ALIGN_BLOCK_SIZE_4096(size);
+	block = mmap(0, alignsize + META_BLOCK_SIZE, PROT_READ | PROT_WRITE,
 			MAP_ANON | MAP_PRIVATE, -1, 0);
 	if (block != MAP_FAILED)
 	{
+		tmp = LARGE_HEAP;
 		block->size = alignsize;
 		block->allocsize = size;
-		block->next = LARGE_HEAP;
-		LARGE_HEAP = block;
+		if (tmp)
+		{
+			while (tmp->next)
+				tmp = tmp->next;
+			tmp->next = block;
+		}
+		else
+			LARGE_HEAP = block;
 		return (block->data);
 	}
 	return (NULL);
