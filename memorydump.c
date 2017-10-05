@@ -12,7 +12,7 @@
 
 #include "malloc.h"
 
-static void	dump_block(t_block *block)
+void		dump_block(t_block *block)
 {
 	char	*ptr;
 

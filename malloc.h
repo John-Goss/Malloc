@@ -88,6 +88,7 @@ int						in_my_address_range(size_t address);
 void					show_alloc_mem(void);
 void					print_alloc_info(t_block *block);
 void					dump_zone(t_type type);
+void					dump_block(t_block *block);
 char					digit(int nb, int maj);
 void					ft_putnbr_base(intmax_t nb, int base);
 
