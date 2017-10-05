@@ -19,6 +19,12 @@
 # include "./libft/INCLUDES/libft.h"
 # include <pthread.h>
 
+/*
+**# define DBG ft_putstr(__func__); ft_putstr(" in "); \
+**ft_putstr(__FILE__); ft_putstr(" at line : "); \
+**ft_putnbr(__LINE__); ft_putchar('\n')
+*/
+
 # define LOCK_INIT g_zone.locked
 # define TINY_HEAP g_zone.tiny_heap
 # define SMALL_HEAP g_zone.small_heap
