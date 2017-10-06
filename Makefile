@@ -6,7 +6,7 @@
 #    By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/03 17:43:42 by jle-quer          #+#    #+#              #
-#    Updated: 2017/10/03 17:52:51 by jle-quer         ###   ########.fr        #
+#    Updated: 2017/10/06 13:49:04 by jle-quer         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,13 +18,13 @@ NAME = libft_malloc_$(HOSTTYPE).so
 
 LINK_NAME = libft_malloc.so
 
-SRC =	malloc.c \
-		display.c \
-		memorydump.c \
-		realloc.c \
-		free.c \
-		init.c \
-		alloc.c
+SRC =	src/malloc.c \
+		src/display.c \
+		src/memorydump.c \
+		src/realloc.c \
+		src/free.c \
+		src/init.c \
+		src/alloc.c
 
 OBJ = $(SRC:.c=.o)
 
