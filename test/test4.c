@@ -1,4 +1,4 @@
-#include "../malloc.h"
+#include <malloc.h>
 
 void	print(char *s)
 {
