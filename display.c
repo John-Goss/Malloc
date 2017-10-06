@@ -49,6 +49,7 @@ void		show_alloc_mem(void)
 	size_t	total;
 
 	total = 0;
+	pthread_mutex_lock(&g_locker);
 	b = TINY_HEAP;
 	write(1, "TINY : ", 7);
 	print_memzone(b, &total);
@@ -61,4 +62,5 @@ void		show_alloc_mem(void)
 	write(1, "Total : ", 8);
 	ft_putnbr_base(total, 10);
 	write(1, " octets\n", 8);
+	pthread_mutex_unlock(&g_locker);
 }
