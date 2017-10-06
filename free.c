@@ -35,7 +35,7 @@ void	exec_free(void *ptr)
 		block->free = 1;
 		if (block->size > SMALL_ALLOC_LIMIT)
 			return (remove_large_alloc(block, prev));
-		merge_blocks(block, prev);
+		defrag_blocks(block, prev);
 	}
 }
 
@@ -72,7 +72,7 @@ void	remove_large_alloc(t_block *block, t_block *prev)
 	munmap((void *)block, block->size);
 }
 
-void	merge_blocks(t_block *block, t_block *prev)
+void	defrag_blocks(t_block *block, t_block *prev)
 {
 	if (block->next == NULL)
 		return ;

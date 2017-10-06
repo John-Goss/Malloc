@@ -82,7 +82,7 @@ void					*alloc_zone(t_block *last, size_t blocksize,
 void					*alloc_large_zone(size_t size);
 void					*extend_heap(t_block *last, size_t size);
 void					split_block(t_block *block, size_t size);
-void					merge_blocks(t_block *block, t_block *prev);
+void					defrag_blocks(t_block *block, t_block *prev);
 void					remove_large_alloc(t_block *block, t_block *prev);
 t_type					get_block_type(t_block *block);
 t_type					get_alloc_type(size_t size);
