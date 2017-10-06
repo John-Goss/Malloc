@@ -6,7 +6,7 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/09/28 13:42:31 by jle-quer          #+#    #+#             */
-/*   Updated: 2017/09/28 18:04:39 by jle-quer         ###   ########.fr       */
+/*   Updated: 2017/10/06 13:34:03 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <stdlib.h>
 # include <sys/mman.h>
 # include <stdio.h>
-# include "./libft/INCLUDES/libft.h"
+# include <libft.h>
 # include <pthread.h>
 
 /*
