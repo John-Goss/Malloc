@@ -13,24 +13,35 @@
 #include "malloc.h"
 
 /*
-**	dump_block(t_block *block, int lock)
+**	dump_block(t_block *block, size_t size , int lock)
 **	@param1: the block that you would dump
-**	@param2: the bool for thread locking; if lock == 1 the treads will lock
+**	@param2: the size  that you would dump
+**	@param3: the bool for thread locking; if lock == 1 the treads will lock
 */
 
-void		dump_block(t_block *block, int lock)
+void		dump_block(void *block, size_t size, int lock)
 {
 	char	*ptr;
-
+	size_t	i;
+	
+	i = 0;
 	if (lock)
 		pthread_mutex_lock(&g_locker);
-	ptr = block->data;
-	while (ptr < block->data + block->size)
+	if (block == NULL || !in_my_address_range((size_t)block - META_BLOCK_SIZE))
 	{
-		ft_putnbr_base((int)(*ptr), 16);
-		ft_putstr(" ");
-		++ptr;
+		if (lock)
+			pthread_mutex_unlock(&g_locker);
+		return ;
 	}
+	ptr = block;
+	while (i < size)
+	{
+		ft_putnbr_base((size_t)*ptr, 16);
+		write(1, " ", 1);
+		++ptr;
+		++i;
+	}
+	write(1, "\n", 1);
 	if (lock)
 		pthread_mutex_unlock(&g_locker);
 }
@@ -51,7 +62,7 @@ void		dump_zone(t_type type)
 		if (heap_start->free == 0)
 		{
 			print_alloc_info(heap_start);
-			dump_block(heap_start, 0);
+			dump_block(heap_start->data, heap_start->size, 0);
 			write(1, "\n", 1);
 		}
 		heap_start = heap_start->next;
