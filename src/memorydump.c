@@ -6,7 +6,7 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/03 11:24:01 by jle-quer          #+#    #+#             */
-/*   Updated: 2017/10/04 18:12:47 by jle-quer         ###   ########.fr       */
+/*   Updated: 2017/10/09 11:20:12 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void		dump_block(void *block, size_t size, int lock)
 {
 	char	*ptr;
 	size_t	i;
-	
+
 	i = 0;
 	if (lock)
 		pthread_mutex_lock(&g_locker);
