@@ -16,8 +16,8 @@
 # include <stdlib.h>
 # include <sys/mman.h>
 # include <stdio.h>
-# include <libft.h>
 # include <pthread.h>
+# include "../libft/INCLUDES/libft.h"
 
 /*
 **# define DBG ft_putstr(__func__); ft_putstr(" in "); \
